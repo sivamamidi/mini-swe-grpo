@@ -1,0 +1,13 @@
+# Core (training)
+torch>=2.1.0
+transformers>=4.40.0
+accelerate>=0.26.0
+
+# Plotting
+matplotlib>=3.8.0
+SciencePlots>=2.1.0
+scipy>=1.11.0
+
+# Optional: for rollout collection speed
+# Install Ollama from https://ollama.com
+# Then: ollama pull qwen2.5-coder:1.5b

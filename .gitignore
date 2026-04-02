@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# Model weights (too large for git)
+checkpoints/grpo_v2/model.safetensors
+checkpoints/grpo_v2/*.json
+!checkpoints/grpo_v2/history.json
+checkpoints/grpo_trained/
+
+# HuggingFace cache
+.hf_cache/
+
+# OS
+.DS_Store
+*.swp
+
+# PDF figures (keep PNGs for GitHub, PDFs are for papers)
+figures/*.pdf

@@ -1,0 +1,1562 @@
+[
+  {
+    "puzzle_id": "hard_off_by_one",
+    "difficulty": 1,
+    "prompt": "Fix the buggy Python function below.\n\nPROBLEM: The function `sum_range(a, b)` should return the sum of all integers from a to b, inclusive. It returns the wrong value for some inputs.\n\nBUGGY CODE:\n```python\ndef sum_range(a, b):\n    total = 0\n    for i in range(a, b):\n        total += i\n    return total\n```\n\nReturn ONLY the corrected Python function. No explanation, no tests, no markdown \u2014 just the function code.",
+    "buggy_code": "def sum_range(a, b):\n    total = 0\n    for i in range(a, b):\n        total += i\n    return total",
+    "rollouts": [
+      {
+        "response": "```python\ndef sum_range(a, b):\n    if a > b:\n        raise ValueError(\"a should not be greater than b\")\n    total = 0\n    for i in range(a, b + 1):\n        total += i\n    return total\n```",
+        "fixed_code": "def sum_range(a, b):\n    if a > b:\n        raise ValueError(\"a should not be greater than b\")\n    total = 0\n    for i in range(a, b + 1):\n        total += i\n    return total",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef sum_range(a, b):\n    total = 0\n    for i in range(b - a + 1): # Change the loop condition to avoid out-of-range error\n        total += (a + i)\n    return total\n```\n\nThe original function had an issue because it used the `range` function incorrectly, which would not correctly iterate from `a` to `b` when `a > b`. The corrected version uses a loop that iterates from 0 up to `(b - a)`, inclusive, and adds each number in this range to the total.",
+        "fixed_code": "def sum_range(a, b):\n    total = 0\n    for i in range(b - a + 1): # Change the loop condition to avoid out-of-range error\n        total += (a + i)\n    return total",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef sum_range(a, b):\n    if a > b:\n        # Swap the values of a and b if they are in the wrong order\n        a, b = b, a\n    total = 0\n    for i in range(a, b + 1):  # Change the range to include the end value\n        total += i\n    return total\n```",
+        "fixed_code": "def sum_range(a, b):\n    if a > b:\n        # Swap the values of a and b if they are in the wrong order\n        a, b = b, a\n    total = 0\n    for i in range(a, b + 1):  # Change the range to include the end value\n        total += i\n    return total",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef sum_range(a, b):\n    total = a + (b - a + 1) * (b - a)\n    return total\n```",
+        "fixed_code": "def sum_range(a, b):\n    total = a + (b - a + 1) * (b - a)\n    return total",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 2,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef sum_range(a, b):\n    if a > b:\n        a, b = b, a  # Swap values if a is greater than b\n    total = 0\n    for i in range(a, b + 1):  # Increment by 1 to include the end value\n        total += i\n    return total\n```\n\nNote: The corrected function includes an additional `if` statement to check if `a` is greater than `b`. If so, it swaps the values of `a` and `b` to ensure that the loop starts from the smaller number and ends at the larger number.",
+        "fixed_code": "def sum_range(a, b):\n    if a > b:\n        a, b = b, a  # Swap values if a is greater than b\n    total = 0\n    for i in range(a, b + 1):  # Increment by 1 to include the end value\n        total += i\n    return total",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "Here is the corrected version of the `sum_range` function:\n\n```python\ndef sum_range(a, b):\n    if a > b:\n        a, b = b, a  # Swap a and b if a is greater than b\n    total = 0\n    for i in range(a, b + 1):  # Increment by 1 to include the last number in the range\n        total += i\n    return total\n```",
+        "fixed_code": "def sum_range(a, b):\n    if a > b:\n        a, b = b, a  # Swap a and b if a is greater than b\n    total = 0\n    for i in range(a, b + 1):  # Increment by 1 to include the last number in the range\n        total += i\n    return total",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef sum_range(a, b):\n    if a > b:\n        a, b = b, a  # Swap a and b if a is greater than b to ensure a is the smaller number\n    return sum(range(a, b + 1))  # The range function generates numbers from start to end inclusive\n```",
+        "fixed_code": "def sum_range(a, b):\n    if a > b:\n        a, b = b, a  # Swap a and b if a is greater than b to ensure a is the smaller number\n    return sum(range(a, b + 1))  # The range function generates numbers from start to end inclusive",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef sum_range(a, b):\n    if a > b:\n        raise ValueError(\"Start value should be less than or equal to end value.\")\n    return sum(range(a, b+1))\n```\n\nThis code includes a check to ensure that `a` is less than or equal to `b`. If this condition is not met, it raises a `ValueError`. The `range()` function in Python generates a sequence of numbers starting from the first argument (`a`) up to but not including the second argument (`b+1`). Therefore, by adding 1 to `b`, we ensure that all integers between `a` and `b` (inclusive) are included in the sum.",
+        "fixed_code": "def sum_range(a, b):\n    if a > b:\n        raise ValueError(\"Start value should be less than or equal to end value.\")\n    return sum(range(a, b+1))",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      }
+    ],
+    "rewards": [
+      1.0,
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "mean_reward": 0.875,
+    "advantages": [
+      0.125,
+      0.125,
+      0.125,
+      -0.875,
+      0.125,
+      0.125,
+      0.125,
+      0.125
+    ],
+    "normalized_advantages": [
+      0.3779644730092272,
+      0.3779644730092272,
+      0.3779644730092272,
+      -2.6457513110645903,
+      0.3779644730092272,
+      0.3779644730092272,
+      0.3779644730092272,
+      0.3779644730092272
+    ],
+    "num_solved": 7
+  },
+  {
+    "puzzle_id": "hard_default_mutable",
+    "difficulty": 1,
+    "prompt": "Fix the buggy Python function below.\n\nPROBLEM: The function `append_to(item, lst=[])` should append item to lst and return lst. However, calling it multiple times without providing lst gives unexpected results. Fix the mutable default argument bug.\n\nBUGGY CODE:\n```python\ndef append_to(item, lst=[]):\n    lst.append(item)\n    return lst\n```\n\nReturn ONLY the corrected Python function. No explanation, no tests, no markdown \u2014 just the function code.",
+    "buggy_code": "def append_to(item, lst=[]):\n    lst.append(item)\n    return lst",
+    "rollouts": [
+      {
+        "response": "Here's the corrected version of your function:\n\n```python\ndef append_to(item, lst=None): \n    if lst is None:\n        lst = []\n    lst.append(item)\n    return lst\n```",
+        "fixed_code": "def append_to(item, lst=None): \n    if lst is None:\n        lst = []\n    lst.append(item)\n    return lst",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "Here is the corrected Python function:\n\n```python\ndef append_to(item, lst=[]):\n    if not lst:  # Check if lst is empty\n        lst = []  # If it's empty, create a new list\n    lst.append(item)  # Append item to lst\n    return lst\n```\n\nExplanation:\nThe initial problem was due to the mutable default argument of `lst`. When the function is called without providing an argument, `lst` refers to the same empty list in every call. So when we append an item to one call, it modifies the empty list that all future calls share. To fix this, we added a check at the beginning of the function to see if `lst` is empty. If it is, we create a new empty list and assign it to `lst`. This way, each subsequent call will create its own separate list and not modify the previous one.",
+        "fixed_code": "def append_to(item, lst=[]):\n    if not lst:  # Check if lst is empty\n        lst = []  # If it's empty, create a new list\n    lst.append(item)  # Append item to lst\n    return lst",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef append_to(item, lst=None):\n    if lst is None:\n        lst = []\n    lst.append(item)\n    return lst\n```",
+        "fixed_code": "def append_to(item, lst=None):\n    if lst is None:\n        lst = []\n    lst.append(item)\n    return lst",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef append_to(item, lst=[]):\n    if not lst:  # Check if the list is empty\n        lst = []  # Initialize an empty list\n    lst.append(item)\n    return lst\n```",
+        "fixed_code": "def append_to(item, lst=[]):\n    if not lst:  # Check if the list is empty\n        lst = []  # Initialize an empty list\n    lst.append(item)\n    return lst",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef append_to(item, lst=[]):\n    lst.append(item)\n    return lst\n```",
+        "fixed_code": "def append_to(item, lst=[]):\n    lst.append(item)\n    return lst",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef append_to(item, lst=None):\n    if lst is None:\n        lst = []\n    lst.append(item)\n    return lst\n```",
+        "fixed_code": "def append_to(item, lst=None):\n    if lst is None:\n        lst = []\n    lst.append(item)\n    return lst",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef append_to(item, lst=None):\n    if lst is None:\n        lst = []\n    lst.append(item)\n    return lst\n```",
+        "fixed_code": "def append_to(item, lst=None):\n    if lst is None:\n        lst = []\n    lst.append(item)\n    return lst",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef append_to(item, lst=None):\n    if lst is None:\n        lst = []\n    lst.append(item)\n    return lst\n```\nThe problem with the original implementation was that mutable default arguments like `lst=[]` are not thread-safe in Python and can lead to unexpected behavior when used in multi-threaded or concurrent scenarios. The `None` check ensures that a new list is created if no argument is provided, thus avoiding the bug.",
+        "fixed_code": "def append_to(item, lst=None):\n    if lst is None:\n        lst = []\n    lst.append(item)\n    return lst",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      }
+    ],
+    "rewards": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "mean_reward": 1.0,
+    "advantages": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "normalized_advantages": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "num_solved": 8
+  },
+  {
+    "puzzle_id": "hard_integer_division",
+    "difficulty": 1,
+    "prompt": "Fix the buggy Python function below.\n\nPROBLEM: The function `average(numbers)` should return the arithmetic mean as a float. It returns an integer instead of a float for some inputs.\n\nBUGGY CODE:\n```python\ndef average(numbers):\n    return sum(numbers) // len(numbers)\n```\n\nReturn ONLY the corrected Python function. No explanation, no tests, no markdown \u2014 just the function code.",
+    "buggy_code": "def average(numbers):\n    return sum(numbers) // len(numbers)",
+    "rollouts": [
+      {
+        "response": "```python\ndef average(numbers):\n    return round(sum(numbers) / len(numbers))\n```",
+        "fixed_code": "def average(numbers):\n    return round(sum(numbers) / len(numbers))",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 1,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef average(numbers):\n    return sum(numbers) / len(numbers)\n```",
+        "fixed_code": "def average(numbers):\n    return sum(numbers) / len(numbers)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef average(numbers):\n    return sum(numbers) / len(numbers)\n```",
+        "fixed_code": "def average(numbers):\n    return sum(numbers) / len(numbers)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "Here's the corrected Python function:\n\n```python\ndef average(numbers):\n    return sum(numbers) / len(numbers)\n```",
+        "fixed_code": "def average(numbers):\n    return sum(numbers) / len(numbers)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef average(numbers):\n    return sum(numbers) / len(numbers)\n```",
+        "fixed_code": "def average(numbers):\n    return sum(numbers) / len(numbers)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef average(numbers):\n    if not numbers:  # Check if the list is empty\n        return 0.0  # Return 0.0 for an empty list to avoid division by zero error\n    return sum(numbers) / len(numbers)\n```\n\nThis function correctly calculates the arithmetic mean of a given list of numbers as a float, handling edge cases such as when the input list is empty by returning 0.0 instead of raising an error.",
+        "fixed_code": "def average(numbers):\n    if not numbers:  # Check if the list is empty\n        return 0.0  # Return 0.0 for an empty list to avoid division by zero error\n    return sum(numbers) / len(numbers)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef average(numbers):\n    return sum(numbers) / len(numbers)\n```",
+        "fixed_code": "def average(numbers):\n    return sum(numbers) / len(numbers)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef average(numbers):\n    return sum(numbers) / len(numbers)\n```",
+        "fixed_code": "def average(numbers):\n    return sum(numbers) / len(numbers)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      }
+    ],
+    "rewards": [
+      0.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "mean_reward": 0.875,
+    "advantages": [
+      -0.875,
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125
+    ],
+    "normalized_advantages": [
+      -2.6457513110645903,
+      0.3779644730092272,
+      0.3779644730092272,
+      0.3779644730092272,
+      0.3779644730092272,
+      0.3779644730092272,
+      0.3779644730092272,
+      0.3779644730092272
+    ],
+    "num_solved": 7
+  },
+  {
+    "puzzle_id": "hard_scope_bug",
+    "difficulty": 1,
+    "prompt": "Fix the buggy Python function below.\n\nPROBLEM: The function `make_counters(n)` should return a list of n functions, where the i-th function returns i when called. Currently all returned functions return the same value.\n\nBUGGY CODE:\n```python\ndef make_counters(n):\n    counters = []\n    for i in range(n):\n        counters.append(lambda: i)\n    return counters\n```\n\nReturn ONLY the corrected Python function. No explanation, no tests, no markdown \u2014 just the function code.",
+    "buggy_code": "def make_counters(n):\n    counters = []\n    for i in range(n):\n        counters.append(lambda: i)\n    return counters",
+    "rollouts": [
+      {
+        "response": "```python\ndef make_counters(n):\n    counters = [lambda: i for i in range(n)]\n    return counters\n```",
+        "fixed_code": "def make_counters(n):\n    counters = [lambda: i for i in range(n)]\n    return counters",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 2,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef make_counters(n):\n    def create_counter(i):\n        return lambda: i\n    \n    return [create_counter(i) for i in range(n)]\n```",
+        "fixed_code": "def make_counters(n):\n    def create_counter(i):\n        return lambda: i\n    \n    return [create_counter(i) for i in range(n)]",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef make_counters(n):\n    counters = [lambda x=i: x for i in range(n)]\n    return counters\n```",
+        "fixed_code": "def make_counters(n):\n    counters = [lambda x=i: x for i in range(n)]\n    return counters",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef make_counters(n):\n    counters = [lambda: x for x in range(1, n + 1)]\n    return counters\n```",
+        "fixed_code": "def make_counters(n):\n    counters = [lambda: x for x in range(1, n + 1)]\n    return counters",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 0,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef make_counters(n):\n    counters = [lambda: i for i in range(n)]\n    return counters\n```",
+        "fixed_code": "def make_counters(n):\n    counters = [lambda: i for i in range(n)]\n    return counters",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 2,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef make_counters(n):\n    counters = []\n    for i in range(n):\n        def count():  # Define the count function here\n            nonlocal i  # Use nonlocal to access the i from the loop\n            return i\n        counters.append(count)  # Append the count function to the list\n    return counters\n```\n\nExplanation: The bug with the original code was that all the functions in the `counters` list were created at once and were identical because the lambda function defined inside the for loop creates a new variable `i` each time, which shadows the outer `i`. To fix this, we use `nonlocal i` to access the `i` from the enclosing scope (the loop) within the count function.",
+        "fixed_code": "def make_counters(n):\n    counters = []\n    for i in range(n):\n        def count():  # Define the count function here\n            nonlocal i  # Use nonlocal to access the i from the loop\n            return i\n        counters.append(count)  # Append the count function to the list\n    return counters",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 2,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef make_counters(n):\n    counters = [lambda: i for i in range(n)]\n    return counters\n```",
+        "fixed_code": "def make_counters(n):\n    counters = [lambda: i for i in range(n)]\n    return counters",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 2,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef make_counters(n):\n    return [lambda: i for i in range(n)]\n```\nIn this solution, we use a list comprehension to create a new list where each element is a lambda function that returns its index `i`. By using list comprehension and passing the index directly into the lambda function, we ensure that each lambda function has a different value of `i`, which is what we need for our purpose.",
+        "fixed_code": "def make_counters(n):\n    return [lambda: i for i in range(n)]",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 2,
+        "total": 4
+      }
+    ],
+    "rewards": [
+      0.0,
+      1.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "mean_reward": 0.25,
+    "advantages": [
+      -0.25,
+      0.75,
+      0.75,
+      -0.25,
+      -0.25,
+      -0.25,
+      -0.25,
+      -0.25
+    ],
+    "normalized_advantages": [
+      -0.5773502691896258,
+      1.7320508075688774,
+      1.7320508075688774,
+      -0.5773502691896258,
+      -0.5773502691896258,
+      -0.5773502691896258,
+      -0.5773502691896258,
+      -0.5773502691896258
+    ],
+    "num_solved": 2
+  },
+  {
+    "puzzle_id": "hard_string_compare",
+    "difficulty": 1,
+    "prompt": "Fix the buggy Python function below.\n\nPROBLEM: The function `is_anagram(s1, s2)` should return True if s1 and s2 are anagrams (same letters, different order), case-insensitive. It fails on mixed-case inputs.\n\nBUGGY CODE:\n```python\ndef is_anagram(s1, s2):\n    return sorted(s1) == sorted(s2)\n```\n\nReturn ONLY the corrected Python function. No explanation, no tests, no markdown \u2014 just the function code.",
+    "buggy_code": "def is_anagram(s1, s2):\n    return sorted(s1) == sorted(s2)",
+    "rollouts": [
+      {
+        "response": "```python\ndef is_anagram(s1, s2):\n    return sorted(s1.lower()) == sorted(s2.lower())\n```",
+        "fixed_code": "def is_anagram(s1, s2):\n    return sorted(s1.lower()) == sorted(s2.lower())",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef is_anagram(s1, s2):\n    # Convert strings to lowercase and remove spaces for case-insensitive comparison\n    clean_s1 = ''.join(sorted([char.lower() for char in s1 if char != ' ']))\n    clean_s2 = ''.join(sorted([char.lower() for char in s2 if char != ' ']))\n\n    return clean_s1 == clean_s2\n```",
+        "fixed_code": "def is_anagram(s1, s2):\n    # Convert strings to lowercase and remove spaces for case-insensitive comparison\n    clean_s1 = ''.join(sorted([char.lower() for char in s1 if char != ' ']))\n    clean_s2 = ''.join(sorted([char.lower() for char in s2 if char != ' ']))\n\n    return clean_s1 == clean_s2",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 3,
+        "total": 4
+      },
+      {
+        "response": "Here's the fixed version of your function:\n\n```python\ndef is_anagram(s1, s2):\n    s1 = s1.lower()\n    s2 = s2.lower() # Convert to lowercase to ignore case differences\n    return sorted(s1) == sorted(s2)\n```\n\nThis function now converts both `s1` and `s2` to lowercase before sorting them, which should make it work correctly with mixed-case inputs.",
+        "fixed_code": "def is_anagram(s1, s2):\n    s1 = s1.lower()\n    s2 = s2.lower() # Convert to lowercase to ignore case differences\n    return sorted(s1) == sorted(s2)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef is_anagram(s1, s2):\n    # Normalize strings to lowercase before sorting\n    normalized_s1 = s1.lower()\n    normalized_s2 = s2.lower()\n    \n    return sorted(normalized_s1) == sorted(normalized_s2)\n```",
+        "fixed_code": "def is_anagram(s1, s2):\n    # Normalize strings to lowercase before sorting\n    normalized_s1 = s1.lower()\n    normalized_s2 = s2.lower()\n    \n    return sorted(normalized_s1) == sorted(normalized_s2)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef is_anagram(s1, s2):\n    # Convert both strings to lower case to ensure case-insensitivity\n    s1 = s1.lower()\n    s2 = s2.lower()\n\n    return sorted(s1) == sorted(s2)\n```\n\nThe issue with the original function was that it was comparing two lists without removing duplicates, which meant it would treat 'A' and 'a' as different characters. The corrected function converts both strings to lower case before sorting them, ensuring that the comparison is case-insensitive and treats 'A' and 'a' as the same character.",
+        "fixed_code": "def is_anagram(s1, s2):\n    # Convert both strings to lower case to ensure case-insensitivity\n    s1 = s1.lower()\n    s2 = s2.lower()\n\n    return sorted(s1) == sorted(s2)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef is_anagram(s1, s2):\n    return sorted(s1.lower()) == sorted(s2.lower())\n```",
+        "fixed_code": "def is_anagram(s1, s2):\n    return sorted(s1.lower()) == sorted(s2.lower())",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef is_anagram(s1, s2):\n    # Convert both strings to lowercase to make it case-insensitive\n    return sorted(s1.lower()) == sorted(s2.lower())\n```\n\nThis corrected function works by first converting both input strings to lowercase using the `lower()` method. This ensures that the comparison is case-insensitive. Then, it sorts each string and compares them. If both are sorted versions of each other, the original strings must be anagrams, and the function returns `True`. Otherwise, it returns `False`.",
+        "fixed_code": "def is_anagram(s1, s2):\n    # Convert both strings to lowercase to make it case-insensitive\n    return sorted(s1.lower()) == sorted(s2.lower())",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef is_anagram(s1, s2):\n    return sorted(s1.lower()) == sorted(s2.lower())\n```",
+        "fixed_code": "def is_anagram(s1, s2):\n    return sorted(s1.lower()) == sorted(s2.lower())",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      }
+    ],
+    "rewards": [
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "mean_reward": 0.875,
+    "advantages": [
+      0.125,
+      -0.875,
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125
+    ],
+    "normalized_advantages": [
+      0.3779644730092272,
+      -2.6457513110645903,
+      0.3779644730092272,
+      0.3779644730092272,
+      0.3779644730092272,
+      0.3779644730092272,
+      0.3779644730092272,
+      0.3779644730092272
+    ],
+    "num_solved": 7
+  },
+  {
+    "puzzle_id": "hard_deep_copy",
+    "difficulty": 2,
+    "prompt": "Fix the buggy Python function below.\n\nPROBLEM: The function `duplicate_grid(grid)` should return a deep copy of a 2D grid. Modifying the copy should NOT affect the original. Currently modifications to the copy affect the original.\n\nBUGGY CODE:\n```python\ndef duplicate_grid(grid):\n    return [row for row in grid]\n```\n\nReturn ONLY the corrected Python function. No explanation, no tests, no markdown \u2014 just the function code.",
+    "buggy_code": "def duplicate_grid(grid):\n    return [row for row in grid]",
+    "rollouts": [
+      {
+        "response": "```python\nimport copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)\n```",
+        "fixed_code": "import copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\nimport copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)\n```",
+        "fixed_code": "import copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\nimport copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)\n```",
+        "fixed_code": "import copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\nimport copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)\n```",
+        "fixed_code": "import copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\nimport copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)\n```",
+        "fixed_code": "import copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\nimport copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)\n```",
+        "fixed_code": "import copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\nimport copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)\n```",
+        "fixed_code": "import copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\nimport copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)\n```",
+        "fixed_code": "import copy\n\ndef duplicate_grid(grid):\n    return copy.deepcopy(grid)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      }
+    ],
+    "rewards": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "mean_reward": 1.0,
+    "advantages": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "normalized_advantages": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "num_solved": 8
+  },
+  {
+    "puzzle_id": "hard_spiral_order",
+    "difficulty": 2,
+    "prompt": "Fix the buggy Python function below.\n\nPROBLEM: The function `spiral_order(matrix)` should return all elements of the matrix in spiral order (right, down, left, up, repeat). It produces wrong output for non-square matrices.\n\nBUGGY CODE:\n```python\ndef spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        for i in range(right, left - 1, -1):\n            result.append(matrix[bottom][i])\n        bottom -= 1\n        for i in range(bottom, top - 1, -1):\n            result.append(matrix[i][left])\n        left += 1\n    return result\n```\n\nReturn ONLY the corrected Python function. No explanation, no tests, no markdown \u2014 just the function code.",
+    "buggy_code": "def spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        for i in range(right, left - 1, -1):\n            result.append(matrix[bottom][i])\n        bottom -= 1\n        for i in range(bottom, top - 1, -1):\n            result.append(matrix[i][left])\n        left += 1\n    return result",
+    "rollouts": [
+      {
+        "response": "```python\ndef spiral_order(matrix):\n    if not matrix:\n        return []\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    result = []\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        if top < bottom:\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n        if left < right:\n            for i in range(bottom, top - 1, -1):\n                result.append(matrix[i][left])\n            left += 1\n    return result\n```",
+        "fixed_code": "def spiral_order(matrix):\n    if not matrix:\n        return []\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    result = []\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        if top < bottom:\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n        if left < right:\n            for i in range(bottom, top - 1, -1):\n                result.append(matrix[i][left])\n            left += 1\n    return result",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        if top < bottom:  # Ensure at least one row below the current column has elements\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n        if left < right:  # Ensure at least one column to the left of the current row has elements\n            for i in range(bottom, top - 1, -1):\n                result.append(matrix[i][left])\n            left += 1\n    return result\n```",
+        "fixed_code": "def spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        if top < bottom:  # Ensure at least one row below the current column has elements\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n        if left < right:  # Ensure at least one column to the left of the current row has elements\n            for i in range(bottom, top - 1, -1):\n                result.append(matrix[i][left])\n            left += 1\n    return result",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        for i in range(right, left - 1, -1):\n            result.append(matrix[bottom][i])\n        bottom -= 1\n        for i in range(bottom, top - 1, -1):\n            result.append(matrix[i][left])\n        left += 1\n    return result\n```",
+        "fixed_code": "def spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        for i in range(right, left - 1, -1):\n            result.append(matrix[bottom][i])\n        bottom -= 1\n        for i in range(bottom, top - 1, -1):\n            result.append(matrix[i][left])\n        left += 1\n    return result",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 1,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        if top < bottom:  # Check if we have elements to go down\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n        if left < right:  # Check if we have elements to go up\n            for i in range(bottom, top - 1, -1):\n                result.append(matrix[i][left])\n            left += 1\n    return result\n```",
+        "fixed_code": "def spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        if top < bottom:  # Check if we have elements to go down\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n        if left < right:  # Check if we have elements to go up\n            for i in range(bottom, top - 1, -1):\n                result.append(matrix[i][left])\n            left += 1\n    return result",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        if top <= bottom: \n            for i in range(top, bottom + 1):\n                result.append(matrix[i][right])\n            right -= 1\n        if left <= right:\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n        if top <= bottom: \n            for i in range(bottom, top - 1, -1):\n                result.append(matrix[i][left])\n            left += 1\n    return result\n```",
+        "fixed_code": "def spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        if top <= bottom: \n            for i in range(top, bottom + 1):\n                result.append(matrix[i][right])\n            right -= 1\n        if left <= right:\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n        if top <= bottom: \n            for i in range(bottom, top - 1, -1):\n                result.append(matrix[i][left])\n            left += 1\n    return result",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 0,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        if top < bottom:  # Check for non-square matrix condition\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n        if left < right:  # Check for non-square matrix condition\n            for i in range(bottom, top - 1, -1):\n                result.append(matrix[i][left])\n            left += 1\n    return result\n```",
+        "fixed_code": "def spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        if top < bottom:  # Check for non-square matrix condition\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n        if left < right:  # Check for non-square matrix condition\n            for i in range(bottom, top - 1, -1):\n                result.append(matrix[i][left])\n            left += 1\n    return result",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        if top != bottom:  # Check if there's more than one row to process\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n        if left != right:  # Check if there's more than one column to process\n            for i in range(bottom, top - 1, -1):\n                result.append(matrix[i][left])\n            left += 1\n    return result\n```",
+        "fixed_code": "def spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        if top != bottom:  # Check if there's more than one row to process\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n        if left != right:  # Check if there's more than one column to process\n            for i in range(bottom, top - 1, -1):\n                result.append(matrix[i][left])\n            left += 1\n    return result",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 1,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef spiral_order(matrix):\n    if not matrix:\n        return []\n    \n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    \n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        \n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        \n        if top < bottom and left < right:  # Check if there are more elements to process\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n            \n            for i in range(bottom, top - 1, -1):\n                result.append(matrix[i][left])\n            left += 1\n    return result\n```",
+        "fixed_code": "def spiral_order(matrix):\n    if not matrix:\n        return []\n    \n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    \n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        \n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        \n        if top < bottom and left < right:  # Check if there are more elements to process\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n            \n            for i in range(bottom, top - 1, -1):\n                result.append(matrix[i][left])\n            left += 1\n    return result",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 0,
+        "total": 3
+      }
+    ],
+    "rewards": [
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0
+    ],
+    "mean_reward": 0.5,
+    "advantages": [
+      0.5,
+      0.5,
+      -0.5,
+      0.5,
+      -0.5,
+      0.5,
+      -0.5,
+      -0.5
+    ],
+    "normalized_advantages": [
+      1.0,
+      1.0,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0,
+      -1.0,
+      -1.0
+    ],
+    "num_solved": 4
+  },
+  {
+    "puzzle_id": "hard_lru_cache",
+    "difficulty": 2,
+    "prompt": "Fix the buggy Python function below.\n\nPROBLEM: The class `LRUCache` should implement a Least Recently Used cache with a given capacity. `get(key)` returns the value or -1. `put(key, value)` inserts/updates and evicts the least recently used item if over capacity. The eviction logic is broken.\n\nBUGGY CODE:\n```python\nclass LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            self.cache[key] = value\n        else:\n            if len(self.cache) >= self.capacity:\n                del self.cache[self.order[0]]\n                self.order.pop(0)\n            self.cache[key] = value\n            self.order.append(key)\n```\n\nReturn ONLY the corrected Python function. No explanation, no tests, no markdown \u2014 just the function code.",
+    "buggy_code": "class LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            self.cache[key] = value\n        else:\n            if len(self.cache) >= self.capacity:\n                del self.cache[self.order[0]]\n                self.order.pop(0)\n            self.cache[key] = value\n            self.order.append(key)",
+    "rollouts": [
+      {
+        "response": "```python\nclass LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            del self.cache[key]\n            self.order.remove(key)\n        else:\n            if len(self.cache) >= self.capacity:\n                least_recent_key = self.order.pop(0)\n                del self.cache[least_recent_key]\n        self.cache[key] = value\n        self.order.append(key)\n```",
+        "fixed_code": "class LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            del self.cache[key]\n            self.order.remove(key)\n        else:\n            if len(self.cache) >= self.capacity:\n                least_recent_key = self.order.pop(0)\n                del self.cache[least_recent_key]\n        self.cache[key] = value\n        self.order.append(key)",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 1,
+        "total": 3
+      },
+      {
+        "response": "```python\nclass LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            # Move the accessed item to the end of the order list\n            self.order.remove(key)\n            self.order.append(key)\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            del self.cache[key]  # Remove the old key-value pair\n            self.order.remove(key)  # Remove the old key from the order list\n        else:\n            if len(self.cache) >= self.capacity:\n                # Evict the least recently used item (first item in the order list)\n                del self.cache[self.order[0]]\n                self.order.pop(0)  # Remove the first item from the order list\n        # Add the new key-value pair and move it to the end of the order list\n        self.cache[key] = value\n        self.order.append(key)\n```",
+        "fixed_code": "class LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            # Move the accessed item to the end of the order list\n            self.order.remove(key)\n            self.order.append(key)\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            del self.cache[key]  # Remove the old key-value pair\n            self.order.remove(key)  # Remove the old key from the order list\n        else:\n            if len(self.cache) >= self.capacity:\n                # Evict the least recently used item (first item in the order list)\n                del self.cache[self.order[0]]\n                self.order.pop(0)  # Remove the first item from the order list\n        # Add the new key-value pair and move it to the end of the order list\n        self.cache[key] = value\n        self.order.append(key)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\nclass LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            # Move the accessed item to the end of the order list\n            index = self.order.index(key)\n            self.order.remove(key)\n            self.order.append(key)\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            # Update the value and move the accessed item to the end of the order list\n            index = self.order.index(key)\n            self.order.remove(key)\n            self.order.append(key)\n            self.cache[key] = value\n        else:\n            if len(self.cache) >= self.capacity:\n                # Remove the least recently used item from both the cache and order lists\n                del self.cache[self.order.pop(0)]\n            self.cache[key] = value\n            self.order.append(key)\n```",
+        "fixed_code": "class LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            # Move the accessed item to the end of the order list\n            index = self.order.index(key)\n            self.order.remove(key)\n            self.order.append(key)\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            # Update the value and move the accessed item to the end of the order list\n            index = self.order.index(key)\n            self.order.remove(key)\n            self.order.append(key)\n            self.cache[key] = value\n        else:\n            if len(self.cache) >= self.capacity:\n                # Remove the least recently used item from both the cache and order lists\n                del self.cache[self.order.pop(0)]\n            self.cache[key] = value\n            self.order.append(key)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\nclass LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            del self.cache[key]\n            self.order.remove(key)\n        if len(self.cache) >= self.capacity:\n            del self.cache[self.order.pop(0)]\n        self.cache[key] = value\n        self.order.append(key)\n```",
+        "fixed_code": "class LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            del self.cache[key]\n            self.order.remove(key)\n        if len(self.cache) >= self.capacity:\n            del self.cache[self.order.pop(0)]\n        self.cache[key] = value\n        self.order.append(key)",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 1,
+        "total": 3
+      },
+      {
+        "response": "```python\nclass LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            self.order.remove(key)\n            self.order.append(key)\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            del self.cache[key]\n            self.order.remove(key)\n        else:\n            if len(self.cache) >= self.capacity:\n                del self.cache[self.order[0]]\n                self.order.pop(0)\n            self.cache[key] = value\n            self.order.append(key)\n```",
+        "fixed_code": "class LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            self.order.remove(key)\n            self.order.append(key)\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            del self.cache[key]\n            self.order.remove(key)\n        else:\n            if len(self.cache) >= self.capacity:\n                del self.cache[self.order[0]]\n                self.order.pop(0)\n            self.cache[key] = value\n            self.order.append(key)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\nclass LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            del self.cache[key]\n            self.order.remove(key)\n            self.order.append(key)\n        else:\n            if len(self.cache) >= self.capacity:\n                del self.cache[self.order.pop(0)]\n            self.cache[key] = value\n            self.order.append(key)\n```",
+        "fixed_code": "class LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            del self.cache[key]\n            self.order.remove(key)\n            self.order.append(key)\n        else:\n            if len(self.cache) >= self.capacity:\n                del self.cache[self.order.pop(0)]\n            self.cache[key] = value\n            self.order.append(key)",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 1,
+        "total": 3
+      },
+      {
+        "response": "```python\nclass LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            self.order.remove(key)\n            self.order.append(key)\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            del self.cache[key]\n            self.order.remove(key)\n        else:\n            if len(self.cache) >= self.capacity:\n                del self.cache[self.order[0]]\n                self.order.pop(0)\n            self.cache[key] = value\n            self.order.append(key)\n```",
+        "fixed_code": "class LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            self.order.remove(key)\n            self.order.append(key)\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            del self.cache[key]\n            self.order.remove(key)\n        else:\n            if len(self.cache) >= self.capacity:\n                del self.cache[self.order[0]]\n                self.order.pop(0)\n            self.cache[key] = value\n            self.order.append(key)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\nclass LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            # Move the accessed item to the end of the order list\n            self.order.remove(key)\n            self.order.append(key)\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            # Update the value and move it to the end of the order list\n            del self.cache[key]\n            self.order.remove(key)\n            self.order.append(key)\n            self.cache[key] = value\n        else:\n            if len(self.cache) >= self.capacity:\n                # Evict the least recently used item\n                del self.cache[self.order.pop(0)]\n            self.cache[key] = value\n            self.order.append(key)\n```",
+        "fixed_code": "class LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        self.order = []\n\n    def get(self, key):\n        if key in self.cache:\n            # Move the accessed item to the end of the order list\n            self.order.remove(key)\n            self.order.append(key)\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            # Update the value and move it to the end of the order list\n            del self.cache[key]\n            self.order.remove(key)\n            self.order.append(key)\n            self.cache[key] = value\n        else:\n            if len(self.cache) >= self.capacity:\n                # Evict the least recently used item\n                del self.cache[self.order.pop(0)]\n            self.cache[key] = value\n            self.order.append(key)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      }
+    ],
+    "rewards": [
+      0.0,
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0
+    ],
+    "mean_reward": 0.625,
+    "advantages": [
+      -0.625,
+      0.375,
+      0.375,
+      -0.625,
+      0.375,
+      -0.625,
+      0.375,
+      0.375
+    ],
+    "normalized_advantages": [
+      -1.2909944487358056,
+      0.7745966692414834,
+      0.7745966692414834,
+      -1.2909944487358056,
+      0.7745966692414834,
+      -1.2909944487358056,
+      0.7745966692414834,
+      0.7745966692414834
+    ],
+    "num_solved": 5
+  },
+  {
+    "puzzle_id": "hard_merge_intervals",
+    "difficulty": 2,
+    "prompt": "Fix the buggy Python function below.\n\nPROBLEM: The function `merge_intervals(intervals)` takes a list of [start, end] pairs and merges overlapping intervals. It fails when intervals are not pre-sorted.\n\nBUGGY CODE:\n```python\ndef merge_intervals(intervals):\n    if not intervals:\n        return []\n    merged = [intervals[0]]\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged\n```\n\nReturn ONLY the corrected Python function. No explanation, no tests, no markdown \u2014 just the function code.",
+    "buggy_code": "def merge_intervals(intervals):\n    if not intervals:\n        return []\n    merged = [intervals[0]]\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged",
+    "rollouts": [
+      {
+        "response": "```python\ndef merge_intervals(intervals):\n    if not intervals:\n        return []\n    intervals.sort()\n    merged = [intervals[0]]\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged\n```",
+        "fixed_code": "def merge_intervals(intervals):\n    if not intervals:\n        return []\n    intervals.sort()\n    merged = [intervals[0]]\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef merge_intervals(intervals):\n    if not intervals:\n        return []\n    \n    # Sort intervals based on their start values\n    intervals.sort(key=lambda x: x[0])\n    \n    merged = [intervals[0]]\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    \n    return merged\n```",
+        "fixed_code": "def merge_intervals(intervals):\n    if not intervals:\n        return []\n    \n    # Sort intervals based on their start values\n    intervals.sort(key=lambda x: x[0])\n    \n    merged = [intervals[0]]\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    \n    return merged",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef merge_intervals(intervals):\n    if not intervals:\n        return []\n    \n    merged = [intervals[0]]\n    for start, end in sorted(intervals[1:], key=lambda x: x[0]):\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    \n    return merged\n```",
+        "fixed_code": "def merge_intervals(intervals):\n    if not intervals:\n        return []\n    \n    merged = [intervals[0]]\n    for start, end in sorted(intervals[1:], key=lambda x: x[0]):\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    \n    return merged",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 3,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef merge_intervals(intervals):\n    if not intervals:\n        return []\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged\n```",
+        "fixed_code": "def merge_intervals(intervals):\n    if not intervals:\n        return []\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef merge_intervals(intervals):\n    if not intervals:\n        return []\n    merged = [intervals[0]]\n    for start, end in sorted(intervals, key=lambda x: x[0]):\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged\n```",
+        "fixed_code": "def merge_intervals(intervals):\n    if not intervals:\n        return []\n    merged = [intervals[0]]\n    for start, end in sorted(intervals, key=lambda x: x[0]):\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 3,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef merge_intervals(intervals):\n    if not intervals:\n        return []\n    merged = [intervals[0]]\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged\n```",
+        "fixed_code": "def merge_intervals(intervals):\n    if not intervals:\n        return []\n    merged = [intervals[0]]\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 3,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef merge_intervals(intervals):\n    if not intervals:\n        return []\n    \n    # Sort intervals by their start times\n    intervals.sort(key=lambda x: x[0])\n    \n    merged = [intervals[0]]\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    \n    return merged\n```",
+        "fixed_code": "def merge_intervals(intervals):\n    if not intervals:\n        return []\n    \n    # Sort intervals by their start times\n    intervals.sort(key=lambda x: x[0])\n    \n    merged = [intervals[0]]\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    \n    return merged",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef merge_intervals(intervals):\n    if not intervals:\n        return []\n    sorted_intervals = sorted(intervals)\n    merged = [sorted_intervals[0]]\n    for start, end in sorted_intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged\n```",
+        "fixed_code": "def merge_intervals(intervals):\n    if not intervals:\n        return []\n    sorted_intervals = sorted(intervals)\n    merged = [sorted_intervals[0]]\n    for start, end in sorted_intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      }
+    ],
+    "rewards": [
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0
+    ],
+    "mean_reward": 0.625,
+    "advantages": [
+      0.375,
+      0.375,
+      -0.625,
+      0.375,
+      -0.625,
+      -0.625,
+      0.375,
+      0.375
+    ],
+    "normalized_advantages": [
+      0.7745966692414834,
+      0.7745966692414834,
+      -1.2909944487358056,
+      0.7745966692414834,
+      -1.2909944487358056,
+      -1.2909944487358056,
+      0.7745966692414834,
+      0.7745966692414834
+    ],
+    "num_solved": 5
+  },
+  {
+    "puzzle_id": "hard_balanced_parens",
+    "difficulty": 2,
+    "prompt": "Fix the buggy Python function below.\n\nPROBLEM: The function `is_balanced(s)` should check if a string of brackets ()[]{}  is balanced. It only checks parentheses and ignores [] and {}.\n\nBUGGY CODE:\n```python\ndef is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0\n```\n\nReturn ONLY the corrected Python function. No explanation, no tests, no markdown \u2014 just the function code.",
+    "buggy_code": "def is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0",
+    "rollouts": [
+      {
+        "response": "```python\ndef is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0\n```",
+        "fixed_code": "def is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 4,
+        "total": 5
+      },
+      {
+        "response": "```python\ndef is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0\n```",
+        "fixed_code": "def is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 4,
+        "total": 5
+      },
+      {
+        "response": "```python\ndef is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0\n```",
+        "fixed_code": "def is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 4,
+        "total": 5
+      },
+      {
+        "response": "```python\ndef is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0\n```",
+        "fixed_code": "def is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 4,
+        "total": 5
+      },
+      {
+        "response": "```python\ndef is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0\n```",
+        "fixed_code": "def is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 4,
+        "total": 5
+      },
+      {
+        "response": "```python\ndef is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0\n```",
+        "fixed_code": "def is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 4,
+        "total": 5
+      },
+      {
+        "response": "```python\ndef is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0\n```",
+        "fixed_code": "def is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 4,
+        "total": 5
+      },
+      {
+        "response": "```python\ndef is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(' or char == '[' or char == '{':\n            stack.append(char)\n        elif char == ')' or char == ']' or char == '}':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0\n```",
+        "fixed_code": "def is_balanced(s):\n    stack = []\n    for char in s:\n        if char == '(' or char == '[' or char == '{':\n            stack.append(char)\n        elif char == ')' or char == ']' or char == '}':\n            if not stack:\n                return False\n            stack.pop()\n    return len(stack) == 0",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 3,
+        "total": 5
+      }
+    ],
+    "rewards": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "mean_reward": 0.0,
+    "advantages": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "normalized_advantages": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "num_solved": 0
+  },
+  {
+    "puzzle_id": "hard_longest_subseq",
+    "difficulty": 3,
+    "prompt": "Fix the buggy Python function below.\n\nPROBLEM: The function `longest_increasing_subsequence(nums)` should return the LENGTH of the longest strictly increasing subsequence. It returns incorrect results.\n\nBUGGY CODE:\n```python\ndef longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = dp[j] + 1  # bug: should be max(dp[i], dp[j] + 1)\n    return max(dp)\n```\n\nReturn ONLY the corrected Python function. No explanation, no tests, no markdown \u2014 just the function code.",
+    "buggy_code": "def longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = dp[j] + 1  # bug: should be max(dp[i], dp[j] + 1)\n    return max(dp)",
+    "rollouts": [
+      {
+        "response": "```python\ndef longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1)  # corrected: should be max(dp[i], dp[j] + 1)\n    return max(dp)\n```",
+        "fixed_code": "def longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1)  # corrected: should be max(dp[i], dp[j] + 1)\n    return max(dp)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    \n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1)  # corrected line: dp[i] = max(dp[i], dp[j] + 1)\n    \n    return max(dp)\n```",
+        "fixed_code": "def longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    \n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1)  # corrected line: dp[i] = max(dp[i], dp[j] + 1)\n    \n    return max(dp)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1)  # corrected: should be max(dp[i], dp[j] + 1)\n    return max(dp)\n```",
+        "fixed_code": "def longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1)  # corrected: should be max(dp[i], dp[j] + 1)\n    return max(dp)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1)  # fix: should be max(dp[i], dp[j] + 1)\n    return max(dp)\n```",
+        "fixed_code": "def longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1)  # fix: should be max(dp[i], dp[j] + 1)\n    return max(dp)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1) # corrected: dp[i] should be the maximum of dp[i] and dp[j] + 1\n    return max(dp)\n```",
+        "fixed_code": "def longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1) # corrected: dp[i] should be the maximum of dp[i] and dp[j] + 1\n    return max(dp)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1)  # fixed bug: should be max(dp[i], dp[j] + 1)\n    return max(dp)\n```",
+        "fixed_code": "def longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1)  # fixed bug: should be max(dp[i], dp[j] + 1)\n    return max(dp)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1)  # corrected line: should be max(dp[i], dp[j] + 1)\n    return max(dp)\n```",
+        "fixed_code": "def longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1)  # corrected line: should be max(dp[i], dp[j] + 1)\n    return max(dp)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1) # corrected line\n    return max(dp)\n```",
+        "fixed_code": "def longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(1, len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1) # corrected line\n    return max(dp)",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      }
+    ],
+    "rewards": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "mean_reward": 1.0,
+    "advantages": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "normalized_advantages": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "num_solved": 8
+  },
+  {
+    "puzzle_id": "hard_knapsack",
+    "difficulty": 3,
+    "prompt": "Fix the buggy Python function below.\n\nPROBLEM: The function `knapsack(weights, values, capacity)` should return the maximum value achievable with items that fit in the given capacity (0/1 knapsack). The DP table initialization or transition is wrong.\n\nBUGGY CODE:\n```python\ndef knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = values[i-1] + dp[i-1][w - weights[i-1]]\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]\n```\n\nReturn ONLY the corrected Python function. No explanation, no tests, no markdown \u2014 just the function code.",
+    "buggy_code": "def knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = values[i-1] + dp[i-1][w - weights[i-1]]\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]",
+    "rollouts": [
+      {
+        "response": "```python\ndef knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = max(values[i-1] + dp[i-1][w - weights[i-1]], dp[i-1][w])\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]\n```",
+        "fixed_code": "def knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = max(values[i-1] + dp[i-1][w - weights[i-1]], dp[i-1][w])\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    \n    # Correct transition: update dp[i][w] with max of previous value and current value plus the value of the item\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = max(values[i-1] + dp[i-1][w - weights[i-1]], dp[i-1][w])\n            else:\n                dp[i][w] = dp[i-1][w]\n    \n    return dp[n][capacity]\n```\nThe original code had a logical error in the transition. The value of `dp[i][w]` should be updated with either the previous value (`dp[i-1][w]`) or the sum of the current item's value and the maximum possible value from the remaining weight (`dp[i-1][w - weights[i-1]]`).",
+        "fixed_code": "def knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    \n    # Correct transition: update dp[i][w] with max of previous value and current value plus the value of the item\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = max(values[i-1] + dp[i-1][w - weights[i-1]], dp[i-1][w])\n            else:\n                dp[i][w] = dp[i-1][w]\n    \n    return dp[n][capacity]",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = values[i-1] + dp[i-1][w - weights[i-1]]\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]\n```",
+        "fixed_code": "def knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = values[i-1] + dp[i-1][w - weights[i-1]]\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 3,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = max(values[i-1] + dp[i-1][w - weights[i-1]], dp[i-1][w])\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]\n```",
+        "fixed_code": "def knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = max(values[i-1] + dp[i-1][w - weights[i-1]], dp[i-1][w])\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = max(values[i-1], dp[i-1][w - weights[i-1]])\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]\n```",
+        "fixed_code": "def knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = max(values[i-1], dp[i-1][w - weights[i-1]])\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 2,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = max(values[i-1] + dp[i-1][w - weights[i-1]], dp[i-1][w])\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]\n```",
+        "fixed_code": "def knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = max(values[i-1] + dp[i-1][w - weights[i-1]], dp[i-1][w])\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    \n    # Base case: If there are no weights or capacity, return 0\n    if n == 0 or capacity == 0:\n        return 0\n    \n    # Fill the DP table\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            # If the current item can be included in the knapsack\n            if weights[i-1] <= w:\n                dp[i][w] = max(values[i-1] + dp[i-1][w - weights[i-1]], dp[i-1][w])\n            else:\n                dp[i][w] = dp[i-1][w]\n    \n    # The maximum value achievable with the given capacity\n    return dp[n][capacity]\n```",
+        "fixed_code": "def knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    \n    # Base case: If there are no weights or capacity, return 0\n    if n == 0 or capacity == 0:\n        return 0\n    \n    # Fill the DP table\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            # If the current item can be included in the knapsack\n            if weights[i-1] <= w:\n                dp[i][w] = max(values[i-1] + dp[i-1][w - weights[i-1]], dp[i-1][w])\n            else:\n                dp[i][w] = dp[i-1][w]\n    \n    # The maximum value achievable with the given capacity\n    return dp[n][capacity]",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\ndef knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = max(values[i-1] + dp[i-1][w - weights[i-1]], dp[i-1][w])\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]\n```",
+        "fixed_code": "def knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(1, capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = max(values[i-1] + dp[i-1][w - weights[i-1]], dp[i-1][w])\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      }
+    ],
+    "rewards": [
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "mean_reward": 0.75,
+    "advantages": [
+      0.25,
+      0.25,
+      -0.75,
+      0.25,
+      -0.75,
+      0.25,
+      0.25,
+      0.25
+    ],
+    "normalized_advantages": [
+      0.5773502691896258,
+      0.5773502691896258,
+      -1.7320508075688774,
+      0.5773502691896258,
+      -1.7320508075688774,
+      0.5773502691896258,
+      0.5773502691896258,
+      0.5773502691896258
+    ],
+    "num_solved": 6
+  },
+  {
+    "puzzle_id": "hard_trie_insert_search",
+    "difficulty": 3,
+    "prompt": "Fix the buggy Python function below.\n\nPROBLEM: The class `Trie` should support `insert(word)` and `search(word)` (exact match) and `starts_with(prefix)`. The search method incorrectly returns True for prefixes that aren't complete words.\n\nBUGGY CODE:\n```python\nclass Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True  # bug: should check node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True\n```\n\nReturn ONLY the corrected Python function. No explanation, no tests, no markdown \u2014 just the function code.",
+    "buggy_code": "class Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True  # bug: should check node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True",
+    "rollouts": [
+      {
+        "response": "```python\nclass Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end  # bug: should check node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True\n```",
+        "fixed_code": "class Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end  # bug: should check node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\nclass Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end  # bug: should check node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True\n```",
+        "fixed_code": "class Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end  # bug: should check node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\nclass Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end  # bug: should check node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True\n```",
+        "fixed_code": "class Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end  # bug: should check node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\nclass Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end  # bug: should check node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True\n```",
+        "fixed_code": "class Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end  # bug: should check node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\nclass Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True  # correct: should check node.is_end\n```",
+        "fixed_code": "class Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True  # correct: should check node.is_end",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\nclass Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end  # correct: check node.is_end at the end of the loop\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True\n```\n\nExplanation:\nThe bug was that in the `search` method, we were only checking if the character at the current position of the word is in the dictionary. We should have also checked if the entire word was found (i.e., `node.is_end`). This is why the search method incorrectly returned True for prefixes that weren't complete words. The corrected code ensures that both conditions are checked before returning True.",
+        "fixed_code": "class Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end  # correct: check node.is_end at the end of the loop\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\nclass Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end  # bug: should check node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True\n```",
+        "fixed_code": "class Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end  # bug: should check node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      },
+      {
+        "response": "```python\nclass Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end  # correct: should check node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True\n```",
+        "fixed_code": "class Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = Trie()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end  # correct: should check node.is_end\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 4,
+        "total": 4
+      }
+    ],
+    "rewards": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "mean_reward": 1.0,
+    "advantages": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "normalized_advantages": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "num_solved": 8
+  },
+  {
+    "puzzle_id": "hard_graph_cycle",
+    "difficulty": 3,
+    "prompt": "Fix the buggy Python function below.\n\nPROBLEM: The function `has_cycle(graph)` takes an adjacency list (dict of node -> list of neighbors) for a DIRECTED graph and should return True if the graph contains a cycle. It incorrectly detects cycles in DAGs.\n\nBUGGY CODE:\n```python\ndef has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        visited.add(node)\n        for neighbor in graph.get(node, []):\n            if dfs(neighbor):\n                return True\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False\n```\n\nReturn ONLY the corrected Python function. No explanation, no tests, no markdown \u2014 just the function code.",
+    "buggy_code": "def has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        visited.add(node)\n        for neighbor in graph.get(node, []):\n            if dfs(neighbor):\n                return True\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False",
+    "rollouts": [
+      {
+        "response": "```python\ndef has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        visited.add(node)\n        for neighbor in graph.get(node, []):\n            if dfs(neighbor):\n                return True\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False\n```",
+        "fixed_code": "def has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        visited.add(node)\n        for neighbor in graph.get(node, []):\n            if dfs(neighbor):\n                return True\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 3,
+        "total": 5
+      },
+      {
+        "response": "```python\ndef has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        visited.add(node)\n        for neighbor in graph.get(node, []):\n            if dfs(neighbor):\n                return True\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False\n```",
+        "fixed_code": "def has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        visited.add(node)\n        for neighbor in graph.get(node, []):\n            if dfs(neighbor):\n                return True\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 3,
+        "total": 5
+      },
+      {
+        "response": "```python\ndef has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        visited.add(node)\n        for neighbor in graph.get(node, []):\n            if dfs(neighbor):\n                return True\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False\n```",
+        "fixed_code": "def has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        visited.add(node)\n        for neighbor in graph.get(node, []):\n            if dfs(neighbor):\n                return True\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 3,
+        "total": 5
+      },
+      {
+        "response": "```python\ndef has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        if node not in graph:  # If a node is not in the graph, it's not part of any cycle\n            return False\n        visited.add(node)\n        for neighbor in graph[node]:\n            if dfs(neighbor):\n                return True\n        visited.remove(node)  # Remove node from visited set after traversal\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False\n```",
+        "fixed_code": "def has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        if node not in graph:  # If a node is not in the graph, it's not part of any cycle\n            return False\n        visited.add(node)\n        for neighbor in graph[node]:\n            if dfs(neighbor):\n                return True\n        visited.remove(node)  # Remove node from visited set after traversal\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 5,
+        "total": 5
+      },
+      {
+        "response": "```python\ndef has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        visited.add(node)\n        \n        for neighbor in graph.get(node, []):\n            if dfs(neighbor):\n                return True\n        \n        visited.remove(node)  # Remove the node after DFS traversal to mark it as visited again\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False\n```",
+        "fixed_code": "def has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        visited.add(node)\n        \n        for neighbor in graph.get(node, []):\n            if dfs(neighbor):\n                return True\n        \n        visited.remove(node)  # Remove the node after DFS traversal to mark it as visited again\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 5,
+        "total": 5
+      },
+      {
+        "response": "```python\ndef has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        visited.add(node)\n        for neighbor in graph.get(node, []):\n            if dfs(neighbor):\n                return True\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False\n```",
+        "fixed_code": "def has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        visited.add(node)\n        for neighbor in graph.get(node, []):\n            if dfs(neighbor):\n                return True\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 3,
+        "total": 5
+      },
+      {
+        "response": "```python\ndef has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        if node not in visited:  # This change ensures we do not go back to previously explored nodes\n            visited.add(node)\n            for neighbor in graph.get(node, []):\n                if dfs(neighbor):\n                    return True\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False\n```",
+        "fixed_code": "def has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        if node not in visited:  # This change ensures we do not go back to previously explored nodes\n            visited.add(node)\n            for neighbor in graph.get(node, []):\n                if dfs(neighbor):\n                    return True\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 3,
+        "total": 5
+      },
+      {
+        "response": "```python\ndef has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        visited.add(node)\n        for neighbor in graph.get(node, []):\n            if dfs(neighbor):\n                return True\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False\n```",
+        "fixed_code": "def has_cycle(graph):\n    visited = set()\n    \n    def dfs(node):\n        if node in visited:\n            return True\n        visited.add(node)\n        for neighbor in graph.get(node, []):\n            if dfs(neighbor):\n                return True\n        return False\n    \n    for node in graph:\n        if dfs(node):\n            return True\n    return False",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 3,
+        "total": 5
+      }
+    ],
+    "rewards": [
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "mean_reward": 0.25,
+    "advantages": [
+      -0.25,
+      -0.25,
+      -0.25,
+      0.75,
+      0.75,
+      -0.25,
+      -0.25,
+      -0.25
+    ],
+    "normalized_advantages": [
+      -0.5773502691896258,
+      -0.5773502691896258,
+      -0.5773502691896258,
+      1.7320508075688774,
+      1.7320508075688774,
+      -0.5773502691896258,
+      -0.5773502691896258,
+      -0.5773502691896258
+    ],
+    "num_solved": 2
+  },
+  {
+    "puzzle_id": "hard_eval_rpn",
+    "difficulty": 3,
+    "prompt": "Fix the buggy Python function below.\n\nPROBLEM: The function `eval_rpn(tokens)` evaluates a Reverse Polish Notation expression. Tokens are strings: numbers or operators (+, -, *, /). Division should truncate toward zero. It mishandles negative division.\n\nBUGGY CODE:\n```python\ndef eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = stack.pop()\n            a = stack.pop()\n            if token == '+':\n                stack.append(a + b)\n            elif token == '-':\n                stack.append(a - b)\n            elif token == '*':\n                stack.append(a * b)\n            elif token == '/':\n                stack.append(a // b)\n        else:\n            stack.append(int(token))\n    return stack[0]\n```\n\nReturn ONLY the corrected Python function. No explanation, no tests, no markdown \u2014 just the function code.",
+    "buggy_code": "def eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = stack.pop()\n            a = stack.pop()\n            if token == '+':\n                stack.append(a + b)\n            elif token == '-':\n                stack.append(a - b)\n            elif token == '*':\n                stack.append(a * b)\n            elif token == '/':\n                stack.append(a // b)\n        else:\n            stack.append(int(token))\n    return stack[0]",
+    "rollouts": [
+      {
+        "response": "```python\ndef eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token == '+':\n            b = stack.pop()\n            a = stack.pop()\n            stack.append(a + b)\n        elif token == '-':\n            b = stack.pop()\n            a = stack.pop()\n            stack.append(a - b)\n        elif token == '*':\n            b = stack.pop()\n            a = stack.pop()\n            stack.append(a * b)\n        elif token == '/':\n            # Using floor division to truncate toward zero\n            b = int(stack.pop())\n            a = int(stack.pop())\n            if b != 0:\n                stack.append(a // b)\n            else:\n                stack.append(float('inf'))\n        else:\n            stack.append(int(token))\n    return stack[0]\n```\n\nThis code should now correctly evaluate Reverse Polish Notation expressions, handling negative division and truncating results toward zero.",
+        "fixed_code": "def eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token == '+':\n            b = stack.pop()\n            a = stack.pop()\n            stack.append(a + b)\n        elif token == '-':\n            b = stack.pop()\n            a = stack.pop()\n            stack.append(a - b)\n        elif token == '*':\n            b = stack.pop()\n            a = stack.pop()\n            stack.append(a * b)\n        elif token == '/':\n            # Using floor division to truncate toward zero\n            b = int(stack.pop())\n            a = int(stack.pop())\n            if b != 0:\n                stack.append(a // b)\n            else:\n                stack.append(float('inf'))\n        else:\n            stack.append(int(token))\n    return stack[0]",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 2,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = int(stack.pop())\n            a = int(stack.pop())\n            if token == '+':\n                stack.append(a + b)\n            elif token == '-':\n                stack.append(a - b)\n            elif token == '*':\n                stack.append(a * b)\n            elif token == '/':\n                result = a // b\n                if result < 0 and (a % b != 0 or b == 1):\n                    result -= 1\n                stack.append(result)\n        else:\n            stack.append(int(token))\n    return stack[0]\n```",
+        "fixed_code": "def eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = int(stack.pop())\n            a = int(stack.pop())\n            if token == '+':\n                stack.append(a + b)\n            elif token == '-':\n                stack.append(a - b)\n            elif token == '*':\n                stack.append(a * b)\n            elif token == '/':\n                result = a // b\n                if result < 0 and (a % b != 0 or b == 1):\n                    result -= 1\n                stack.append(result)\n        else:\n            stack.append(int(token))\n    return stack[0]",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 2,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = int(stack.pop())\n            a = int(stack.pop())\n            if token == '/':\n                # Truncate toward zero\n                stack.append(int(a / b))\n            else:\n                stack.append(eval(f\"{a}{token}{b}\"))\n        else:\n            stack.append(int(token))\n    return stack[0]\n```",
+        "fixed_code": "def eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = int(stack.pop())\n            a = int(stack.pop())\n            if token == '/':\n                # Truncate toward zero\n                stack.append(int(a / b))\n            else:\n                stack.append(eval(f\"{a}{token}{b}\"))\n        else:\n            stack.append(int(token))\n    return stack[0]",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = stack.pop()\n            a = stack.pop()\n            if token == '+':\n                stack.append(a + b)\n            elif token == '-':\n                stack.append(a - b)\n            elif token == '*':\n                stack.append(a * b)\n            elif token == '/':\n                stack.append(int(a / b))\n        else:\n            stack.append(int(token))\n    return stack[0]\n```",
+        "fixed_code": "def eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = stack.pop()\n            a = stack.pop()\n            if token == '+':\n                stack.append(a + b)\n            elif token == '-':\n                stack.append(a - b)\n            elif token == '*':\n                stack.append(a * b)\n            elif token == '/':\n                stack.append(int(a / b))\n        else:\n            stack.append(int(token))\n    return stack[0]",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = stack.pop()\n            a = stack.pop()\n            if token == '/':\n                # Truncate division to zero by rounding down.\n                result = int(a / b)\n                stack.append(result)\n            else:\n                stack.append(eval(f\"{a} {token} {b}\"))\n        else:\n            stack.append(int(token))\n    return stack[0]\n```",
+        "fixed_code": "def eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = stack.pop()\n            a = stack.pop()\n            if token == '/':\n                # Truncate division to zero by rounding down.\n                result = int(a / b)\n                stack.append(result)\n            else:\n                stack.append(eval(f\"{a} {token} {b}\"))\n        else:\n            stack.append(int(token))\n    return stack[0]",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = stack.pop()\n            a = stack.pop()\n            if token == '/':\n                quotient = int(a / b)  # Use int to truncate toward zero\n                remainder = a % b\n                if remainder != 0 and quotient < 0:  # Handle negative division by taking the absolute value of the quotient\n                    quotient += 1\n                stack.append(quotient)\n            else:\n                stack.append(int(token))\n        else:\n            stack.append(int(token))\n    return stack[0]\n```",
+        "fixed_code": "def eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = stack.pop()\n            a = stack.pop()\n            if token == '/':\n                quotient = int(a / b)  # Use int to truncate toward zero\n                remainder = a % b\n                if remainder != 0 and quotient < 0:  # Handle negative division by taking the absolute value of the quotient\n                    quotient += 1\n                stack.append(quotient)\n            else:\n                stack.append(int(token))\n        else:\n            stack.append(int(token))\n    return stack[0]",
+        "reward": 0.0,
+        "solved": false,
+        "passed": 0,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = stack.pop()\n            a = stack.pop()\n            # Truncate toward zero using floor division\n            if token == '/':\n                stack.append(int(a / b))\n            else:\n                stack.append(eval(f\"{a} {token} {b}\"))\n        else:\n            stack.append(int(token))\n    return stack[0]\n```\n\nIn the original function, it tried to perform integer division (`//`) without truncating toward zero. The corrected code uses `int(a / b)` for division to truncate towards zero.",
+        "fixed_code": "def eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = stack.pop()\n            a = stack.pop()\n            # Truncate toward zero using floor division\n            if token == '/':\n                stack.append(int(a / b))\n            else:\n                stack.append(eval(f\"{a} {token} {b}\"))\n        else:\n            stack.append(int(token))\n    return stack[0]",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "response": "```python\ndef eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = stack.pop()\n            a = stack.pop()\n            if token == '+':\n                stack.append(a + b)\n            elif token == '-':\n                stack.append(a - b)\n            elif token == '*':\n                stack.append(a * b)\n            elif token == '/':\n                # Division should truncate toward zero\n                stack.append(int(a / float(b)))\n        else:\n            stack.append(float(token))\n    return stack[0]\n```",
+        "fixed_code": "def eval_rpn(tokens):\n    stack = []\n    for token in tokens:\n        if token in '+-*/':\n            b = stack.pop()\n            a = stack.pop()\n            if token == '+':\n                stack.append(a + b)\n            elif token == '-':\n                stack.append(a - b)\n            elif token == '*':\n                stack.append(a * b)\n            elif token == '/':\n                # Division should truncate toward zero\n                stack.append(int(a / float(b)))\n        else:\n            stack.append(float(token))\n    return stack[0]",
+        "reward": 1.0,
+        "solved": true,
+        "passed": 3,
+        "total": 3
+      }
+    ],
+    "rewards": [
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0
+    ],
+    "mean_reward": 0.625,
+    "advantages": [
+      -0.625,
+      -0.625,
+      0.375,
+      0.375,
+      0.375,
+      -0.625,
+      0.375,
+      0.375
+    ],
+    "normalized_advantages": [
+      -1.2909944487358056,
+      -1.2909944487358056,
+      0.7745966692414834,
+      0.7745966692414834,
+      0.7745966692414834,
+      -1.2909944487358056,
+      0.7745966692414834,
+      0.7745966692414834
+    ],
+    "num_solved": 5
+  }
+]
