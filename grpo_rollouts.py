@@ -21,7 +21,7 @@ Key concepts:
 import json
 import os
 import time
-from agent import query_ollama, extract_code
+from agent import query_vllm, extract_code, MODEL_NAME
 from env import CodeFixEnv
 from puzzles_hard import PUZZLES_HARD
 
@@ -30,7 +30,7 @@ def collect_rollouts(
     puzzles=None,
     group_size: int = 8,
     temperature: float = 0.8,
-    model: str = "qwen2.5-coder:1.5b",
+    model: str = MODEL_NAME,
     verbose: bool = True,
 ) -> list[dict]:
     """
@@ -64,7 +64,7 @@ def collect_rollouts(
         rollouts = []
         for g in range(group_size):
             # Query with temperature > 0 for diversity
-            raw_response = query_ollama(prompt, model=model, temperature=temperature)
+            raw_response = query_vllm(prompt, model=model, temperature=temperature)
             fixed_code = extract_code(raw_response)
             reward, info = env.step(fixed_code)
 

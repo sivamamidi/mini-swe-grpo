@@ -1,7 +1,8 @@
 """
 Agent — The LLM-powered code fixer.
 
-This module connects our CodeFixEnv to a local LLM via Ollama.
+This module connects our CodeFixEnv to an LLM served via vLLM's
+OpenAI-compatible API (running on RunPod GPU).
 The agent:
   1. Reads the bug description + buggy code from the environment
   2. Sends it to the LLM as a prompt
@@ -13,49 +14,56 @@ The real system uses vLLM to serve a 32B model and has a multi-turn
 scaffold (grep, edit, run tests). Ours is single-turn: one prompt, one fix.
 """
 
-import json
 import re
 import time
-import urllib.request
+from openai import OpenAI
 from env import CodeFixEnv
 from puzzles import PUZZLES
 from puzzles_hard import PUZZLES_HARD
 
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
+client = OpenAI(
+    base_url="http://localhost:8000/v1",
+    api_key="EMPTY"
+)
+
+MODEL_NAME = "./Mini-SWE-RL/models/Qwen2.5-Coder-1.5B-Instruct"
 
 
-def query_ollama(prompt: str, model: str = "qwen2.5-coder:1.5b", temperature: float = 0.0) -> str:
+def query_vllm(prompt: str,
+               model: str = MODEL_NAME,
+               temperature: float = 0.0) -> str:
     """
-    Send a prompt to Ollama and get the response.
+    Send a prompt to the vLLM server and get the response.
 
     Args:
         prompt: The text prompt to send.
-        model: Which Ollama model to use.
+        model: Model name as registered in the vLLM server.
         temperature: 0.0 = deterministic, higher = more random.
                      For baseline we use 0.0 (greedy).
                      For GRPO training we'll use ~0.7 (need diversity).
     """
-    payload = json.dumps({
-        "model": model,
-        "prompt": prompt,
-        "stream": False,       # Get the full response at once
-        "options": {
-            "temperature": temperature,
-            "num_predict": 512, # Max tokens — our fixes are short
-        },
-    }).encode("utf-8")
-
-    req = urllib.request.Request(
-        OLLAMA_URL,
-        data=payload,
-        headers={"Content-Type": "application/json"},
-    )
-
     try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            result = json.loads(resp.read().decode("utf-8"))
-            return result["response"]
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a coding assistant. "
+                        "Return ONLY valid Python code. "
+                        "No markdown. No explanations."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            temperature=temperature,
+            max_tokens=512,
+        )
+        return response.choices[0].message.content
     except Exception as e:
         return f"ERROR: {e}"
 
@@ -99,7 +107,7 @@ def extract_code(response: str) -> str:
     return response.strip()
 
 
-def run_agent_on_puzzle(env: CodeFixEnv, puzzle_id: str, model: str = "qwen2.5-coder:1.5b",
+def run_agent_on_puzzle(env: CodeFixEnv, puzzle_id: str, model: str = MODEL_NAME,
                         temperature: float = 0.0, verbose: bool = True) -> dict:
     """
     Run the agent on a single puzzle. One complete episode.
@@ -122,7 +130,7 @@ def run_agent_on_puzzle(env: CodeFixEnv, puzzle_id: str, model: str = "qwen2.5-c
 
     # Step 3: Query the LLM
     start_time = time.time()
-    raw_response = query_ollama(prompt, model=model, temperature=temperature)
+    raw_response = query_vllm(prompt, model=model, temperature=temperature)
     elapsed = time.time() - start_time
 
     # Step 4: Extract code from response
@@ -158,7 +166,7 @@ def run_agent_on_puzzle(env: CodeFixEnv, puzzle_id: str, model: str = "qwen2.5-c
     }
 
 
-def run_baseline(model: str = "qwen2.5-coder:1.5b", hard_only: bool = False,
+def run_baseline(model: str = MODEL_NAME, hard_only: bool = False,
                   verbose: bool = True) -> list[dict]:
     """
     Run the agent on ALL puzzles. This is our baseline — before any RL training.

@@ -1,10 +1,10 @@
 """
-GRPO Trainer v2 — Improved for real local training results.
+GRPO Trainer v2 — Improved for real training results on RunPod GPU.
 
 Key improvements over v1:
-  1. HYBRID GENERATION: Uses Ollama for fast rollout collection,
+  1. HYBRID GENERATION: Uses vLLM for fast rollout collection,
      HuggingFace for log-prob computation and gradient updates.
-     This is 5-10x faster than generating through HuggingFace on MPS.
+     This is 5-10x faster than generating through HuggingFace directly.
   2. FOCUSED PUZZLE SET: Only trains on "mixed" puzzles where the
      model sometimes succeeds — these have the best learning signal.
   3. MORE EPOCHS + LARGER GROUPS: 10 epochs, group_size=8.
@@ -24,15 +24,15 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from env import CodeFixEnv
 from puzzles_hard import PUZZLES_HARD
 from puzzles_medium import PUZZLES_MEDIUM
-from agent import query_ollama, extract_code
+from agent import query_vllm, extract_code, MODEL_NAME
 
 
 # ── Configuration ─────────────────────────────────────────────────────
 
 class Config:
-    # Model (HuggingFace for training, Ollama for generation)
+    # Model (HuggingFace for training, vLLM for generation)
     hf_model: str = "Qwen/Qwen2.5-Coder-1.5B-Instruct"
-    ollama_model: str = "qwen2.5-coder:1.5b"
+    vllm_model: str = MODEL_NAME
 
     # GRPO
     group_size: int = 8          # 8 rollouts per puzzle (up from 4)
@@ -138,14 +138,14 @@ class GRPOTrainerV2:
         print(f"Ready. {params:,} parameters. {len(TRAIN_PUZZLES)} training puzzles.")
         self.history = []
 
-    def collect_rollouts_ollama(self, puzzle: dict) -> list[dict]:
-        """Fast rollout collection via Ollama."""
+    def collect_rollouts_vllm(self, puzzle: dict) -> list[dict]:
+        """Fast rollout collection via vLLM."""
         prompt = format_prompt(puzzle)
         rollouts = []
 
         for _ in range(self.config.group_size):
-            raw = query_ollama(prompt, model=self.config.ollama_model,
-                               temperature=self.config.temperature)
+            raw = query_vllm(prompt, model=self.config.vllm_model,
+                             temperature=self.config.temperature)
             code = extract_code(raw)
 
             # Score it
@@ -264,15 +264,15 @@ class GRPOTrainerV2:
             "num_solved": sum(1 for r in rewards if r == 1.0),
         }
 
-    def evaluate_ollama(self, puzzles: list[dict] = None) -> dict:
-        """Evaluate using Ollama (greedy, temp=0)."""
+    def evaluate_vllm(self, puzzles: list[dict] = None) -> dict:
+        """Evaluate using vLLM (greedy, temp=0)."""
         if puzzles is None:
             puzzles = EVAL_PUZZLES
         solved = 0
         results = []
         for p in puzzles:
             prompt = format_prompt(p)
-            raw = query_ollama(prompt, model=self.config.ollama_model, temperature=0.0)
+            raw = query_vllm(prompt, model=self.config.vllm_model, temperature=0.0)
             code = extract_code(raw)
 
             ns = {}
@@ -347,15 +347,15 @@ class GRPOTrainerV2:
                 "rate": solved / len(puzzles), "details": results}
 
     def train(self):
-        """Main training loop with hybrid Ollama generation + HF gradient updates."""
+        """Main training loop with hybrid vLLM generation + HF gradient updates."""
         cfg = self.config
         puzzles = TRAIN_PUZZLES
 
         # Pre-training eval
         print(f"\n{'='*60}")
-        print("  PRE-TRAINING EVALUATION (Ollama baseline)")
+        print("  PRE-TRAINING EVALUATION (vLLM baseline)")
         print(f"{'='*60}")
-        pre_eval = self.evaluate_ollama(EVAL_PUZZLES)
+        pre_eval = self.evaluate_vllm(EVAL_PUZZLES)
         print(f"  Baseline: {pre_eval['solved']}/{pre_eval['total']} "
               f"({100*pre_eval['rate']:.1f}%)")
         for r in pre_eval["details"]:
@@ -377,8 +377,8 @@ class GRPOTrainerV2:
             epoch_kls = []
 
             for pi, puzzle in enumerate(puzzles):
-                # Phase 1: Collect rollouts via Ollama (fast)
-                rollouts = self.collect_rollouts_ollama(puzzle)
+                # Phase 1: Collect rollouts via vLLM (fast)
+                rollouts = self.collect_rollouts_vllm(puzzle)
                 n_solved = sum(1 for r in rollouts if r["solved"])
 
                 # Phase 2: Gradient update via HuggingFace
@@ -429,7 +429,7 @@ class GRPOTrainerV2:
         print(f"\n{'#'*60}")
         print(f"  RESULTS")
         print(f"{'#'*60}")
-        print(f"  Before (Ollama/base): {pre_eval['solved']}/{pre_eval['total']} "
+        print(f"  Before (vLLM/base): {pre_eval['solved']}/{pre_eval['total']} "
               f"({100*pre_eval['rate']:.1f}%)")
         print(f"  After  (HF/trained):  {post_eval['solved']}/{post_eval['total']} "
               f"({100*post_eval['rate']:.1f}%)")

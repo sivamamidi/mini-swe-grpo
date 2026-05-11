@@ -1,7 +1,7 @@
 # Mini-SWE-RL: Teaching a Small Language Model to Fix Bugs with Reinforcement Learning
 
-> **Train an RL-powered code-fixing agent from scratch on a laptop.**
-> Same algorithm as [DeepSWE](https://arxiv.org/abs/2504.xxxxx) (42.2% on SWE-bench), but miniaturized to run on Apple Silicon.
+> **Train an RL-powered code-fixing agent from scratch using vLLM + RunPod GPU.**
+> Same algorithm as [DeepSWE](https://arxiv.org/abs/2504.xxxxx) (42.2% on SWE-bench), but miniaturized for a single GPU setup.
 
 ![Training Curve](figures/fig1_training_curve.png)
 
@@ -13,7 +13,7 @@
 | Hard Puzzles (15) | 73.3% | 73.3% | 0.0% |
 | Medium Puzzles (15) | 60.0% | 73.3% | **+13.3%** |
 | Newly Solved Puzzles | — | 7 | |
-| Training Time | — | 30 min | Apple M4 Pro |
+| Training Time | — | ~30 min | RunPod GPU |
 
 **The model learned to solve 7 new puzzles** including Python closure bugs, directed graph cycle detection, balanced bracket matching, and integer division edge cases — problems it had never solved before.
 
@@ -29,7 +29,7 @@ This is a **complete, from-scratch implementation** of the RL training pipeline 
 2. **Agent** (like [DeepSWE](https://arxiv.org/abs/2504.xxxxx)): An LLM that reads bug descriptions and generates fixes
 3. **Training** (like [rLLM](https://github.com/agentica-project/rLLM)): GRPO (Group Relative Policy Optimization) — the same algorithm that trained DeepSWE
 
-The difference: DeepSWE uses Qwen3-32B on 64 H100 GPUs for 6 days. **We use Qwen2.5-Coder-1.5B on an M4 Pro MacBook for 30 minutes.** The algorithm is identical.
+The difference: DeepSWE uses Qwen3-32B on 64 H100 GPUs for 6 days. **We use Qwen2.5-Coder-1.5B on a single RunPod GPU with vLLM for ~30 minutes.** The algorithm is identical.
 
 ![Architecture](figures/fig4_architecture.png)
 
@@ -61,29 +61,33 @@ The difference: DeepSWE uses Qwen3-32B on 64 H100 GPUs for 6 days. **We use Qwen
 git clone https://github.com/RajatDandekar/Mini-SWE-RL.git
 cd Mini-SWE-RL
 
-# 2. Install Ollama (for fast inference)
-# Download from https://ollama.com, then:
-ollama pull qwen2.5-coder:1.5b
-
-# 3. Set up Python environment
-python3 -m venv .venv
-source .venv/bin/activate
+# 2. Install dependencies (on RunPod GPU machine)
+pip install vllm openai
 pip install torch transformers accelerate matplotlib scipy SciencePlots
 
-# 4. Run the baseline evaluation
+# 3. Start vLLM server (on RunPod)
+python -m vllm.entrypoints.openai.api_server \
+  --model ./Mini-SWE-RL/models/Qwen2.5-Coder-1.5B-Instruct \
+  --host 0.0.0.0 --port 8000 \
+  --dtype float16 --gpu-memory-utilization 0.7 --max-model-len 1024
+
+# 4. Verify vLLM is running (in a separate terminal)
+python test_vllm.py
+
+# 5. Run the baseline evaluation
 python agent.py --hard
 # Expected: ~73% solve rate (greedy, temperature=0)
 
-# 5. Collect GRPO rollouts
+# 6. Collect GRPO rollouts
 python grpo_rollouts.py
 # Generates 120 rollouts (15 puzzles × 8 attempts), ~2 minutes
 
-# 6. Train with GRPO
-HF_HOME=./.hf_cache python grpo_trainer_v2.py --no-ref
-# 10 epochs, ~30 minutes on Apple Silicon
+# 7. Train with GRPO
+python grpo_trainer_v2.py --no-ref
+# 10 epochs, ~30 minutes on RunPod GPU
 # Expected: 66.7% → 73.3% (+6.7%)
 
-# 7. Generate figures
+# 8. Generate figures
 python generate_figures.py
 ```
 
@@ -97,7 +101,8 @@ mini_rl/
 ├── puzzles_medium.py       # 15 medium puzzles (Python gotchas, edge cases)
 ├── puzzles_hard.py         # 15 hard puzzles (algorithms, data structures)
 ├── env.py                  # CodeFixEnv — gym-style environment
-├── agent.py                # LLM agent via Ollama API
+├── agent.py                # LLM agent via vLLM OpenAI-compatible API
+├── test_vllm.py            # Smoke test for vLLM server connectivity
 ├── grpo_rollouts.py        # Rollout collection (Phase 1 of GRPO)
 ├── grpo_trainer.py         # GRPO trainer v1 (initial attempt)
 ├── grpo_trainer_v2.py      # GRPO trainer v2 (production version)
@@ -177,18 +182,20 @@ The agent is simple: it takes a prompt (bug description + buggy code) and querie
 def run_agent_on_puzzle(env, puzzle_id):
     obs = env.reset(puzzle_id=puzzle_id)  # Get the problem
     prompt = env.get_prompt()              # Format it
-    response = query_ollama(prompt)        # Ask the LLM
+    response = query_vllm(prompt)          # Ask the LLM via vLLM
     fixed_code = extract_code(response)    # Parse the response
     reward, info = env.step(fixed_code)    # Score it
     return reward
 ```
 
-### Why Ollama for Inference
+### Why vLLM for Inference
 
-We use **Ollama** (local LLM server) for inference because:
-- **Speed**: ~0.3-0.8s per query (vs ~5-10s through HuggingFace generate on MPS)
-- **Simplicity**: REST API, no GPU memory management
-- **The same model**: `qwen2.5-coder:1.5b` in Ollama is the same weights as `Qwen/Qwen2.5-Coder-1.5B-Instruct` on HuggingFace
+We use **vLLM** (GPU-accelerated LLM server on RunPod) for inference because:
+- **Speed**: Fast GPU-accelerated inference with continuous batching
+- **Better GPU utilization**: Optimized memory management via PagedAttention
+- **Industry standard**: Same serving stack used by DeepSeek, OpenRLHF, verl, and DeepSWE
+- **OpenAI-compatible API**: Drop-in REST API via the `openai` Python client
+- **Higher rollout throughput**: Critical for RL training where we need many rollouts per puzzle
 
 For training (gradient updates), we use HuggingFace Transformers because we need access to the model's parameters and computation graph.
 
@@ -253,15 +260,15 @@ Key finding: **68.3% overall solve rate at temperature=0.8**, with 10 "mixed" gr
 
 The v2 trainer uses a **hybrid architecture**:
 
-1. **Ollama** generates rollouts (fast, ~0.5s each)
+1. **vLLM** generates rollouts (fast GPU-accelerated inference on RunPod)
 2. **HuggingFace** computes log-probabilities and gradients (needs the computation graph)
 3. **PyTorch** updates the model weights via AdamW
 
 ```python
 for epoch in range(10):
     for puzzle in training_puzzles:
-        # Phase 1: Fast rollout collection via Ollama
-        rollouts = collect_rollouts_ollama(puzzle, group_size=8)
+        # Phase 1: Fast rollout collection via vLLM
+        rollouts = collect_rollouts_vllm(puzzle, group_size=8)
 
         # Phase 2: Score and compute advantages
         rewards = [env.step(r.code) for r in rollouts]
@@ -284,14 +291,9 @@ for epoch in range(10):
 
 **Solution:** Created progressively harder puzzle sets. Tested each with temperature=0.8 to find the "sweet spot" where the model solves 30-70% of the time. Final training set: 16 puzzles from the mixed zone.
 
-#### Challenge 2: MPS Memory Exhaustion
+#### Challenge 2: GPU Memory Exhaustion
 
-**Problem:** Loading two 1.5B models (policy + reference) plus optimizer state → 34.7GB MPS allocation → OOM crash.
-
-```
-RuntimeError: MPS backend out of memory (MPS allocated: 34.76 GiB,
-other allocations: 28.98 GiB, max allowed: 63.65 GiB)
-```
+**Problem:** Loading two 1.5B models (policy + reference) plus optimizer state can exhaust GPU VRAM, causing OOM crashes.
 
 **Solution (Attempt 1):** Accumulate gradients one rollout at a time instead of batching all 8.
 
@@ -306,19 +308,19 @@ for rollout_loss in losses:
 optimizer.step()
 ```
 
-**Solution (Attempt 2):** Skip the reference model entirely for local training. The KL penalty (which prevents the model from drifting too far from the original) isn't critical for a short training run.
+**Solution (Attempt 2):** Skip the reference model entirely for shorter training runs. The KL penalty (which prevents the model from drifting too far from the original) isn't critical for a short training run.
 
 ```bash
 python grpo_trainer_v2.py --no-ref  # Halves memory usage
 ```
 
-#### Challenge 3: HuggingFace Generation Speed on MPS
+#### Challenge 3: HuggingFace Generation Speed
 
-**Problem:** Generating text through HuggingFace on Apple MPS is ~5-10s per query. With 16 puzzles × 8 rollouts × 10 epochs = 1,280 generations, this would take hours.
+**Problem:** Generating text through HuggingFace `model.generate()` is slow compared to optimized serving. With 16 puzzles × 8 rollouts × 10 epochs = 1,280 generations, this would take hours.
 
-**Solution:** Hybrid architecture — use Ollama for generation (~0.5s per query), HuggingFace only for log-probability computation and gradient updates.
+**Solution:** Hybrid architecture — use vLLM for generation (GPU-accelerated, continuous batching), HuggingFace only for log-probability computation and gradient updates.
 
-**Caveat:** This means the model generating rollouts (Ollama) doesn't update during training — only the HuggingFace copy updates. For a short training run this is acceptable. In production (DeepSWE), the same model does both generation and training.
+**Caveat:** This means the model generating rollouts (vLLM) doesn't update during training — only the HuggingFace copy updates. For a short training run this is acceptable. In production (DeepSWE), the same model does both generation and training.
 
 #### Challenge 4: Background Process Output Buffering
 
@@ -328,12 +330,7 @@ python grpo_trainer_v2.py --no-ref  # Halves memory usage
 
 #### Challenge 5: HuggingFace Cache Permissions
 
-**Problem:** Apple's provenance restrictions on `~/.cache/huggingface/` prevented model downloads.
-
-```
-PermissionError: [Errno 1] Operation not permitted:
-'/Users/.../.cache/huggingface/hub/models--Qwen--Qwen2.5-Coder-1.5B-Instruct'
-```
+**Problem:** System-level restrictions on `~/.cache/huggingface/` can prevent model downloads.
 
 **Solution:** Use a project-local cache directory:
 
@@ -434,8 +431,8 @@ The regressions illustrate the **stability-plasticity tradeoff**: without a KL p
 | **Model** | Qwen2.5-Coder-1.5B (1.5B params, ~1GB) | Qwen3-32B (32B params, ~65GB) |
 | **Algorithm** | GRPO with binary reward | GRPO with binary reward (identical) |
 | **Group size** | 8 | 16 |
-| **Training compute** | 1 Apple M4 Pro, 30 min | 64 H100 GPUs, 6 days |
-| **Inference** | Ollama (local) | vLLM (GPU cluster) |
+| **Training compute** | 1 RunPod GPU (e.g. RTX 5090), ~30 min | 64 H100 GPUs, 6 days |
+| **Inference** | vLLM (RunPod GPU) | vLLM (GPU cluster) |
 | **KL penalty** | Skipped (memory constraints) | Yes (reference model) |
 | **Result** | 66.7% → 73.3% on toy puzzles | 42.2% Pass@1 on SWE-bench Verified |
 
@@ -446,20 +443,18 @@ The math is the same. The scale is different.
 ## Hardware Requirements
 
 **Minimum (inference only):**
-- Any machine with 4GB RAM
-- Ollama installed
-- No GPU required
+- RunPod GPU instance (or any NVIDIA GPU with 4GB+ VRAM)
+- vLLM + openai Python packages installed
 
 **Recommended (training):**
-- Apple Silicon Mac with 16GB+ RAM (MPS backend)
-- OR any machine with NVIDIA GPU (4GB+ VRAM for 1.5B model)
+- RunPod GPU with 16GB+ VRAM (e.g. RTX 5090 with 32GB)
 - ~3GB disk for model weights
+- Separate local machine for development (VS Code / Cursor)
 
 **Our setup:**
-- Apple M4 Pro, 48GB RAM
-- macOS 25.2.0 (Darwin)
-- Python 3.9.6, PyTorch 2.8.0
-- Ollama 0.19.0
+- RunPod GPU: RTX 5090, 32GB VRAM
+- Local dev: VS Code / Cursor
+- Python 3.10+, PyTorch 2.x, vLLM
 
 ---
 
@@ -474,6 +469,133 @@ The math is the same. The scale is different.
 4. **rLLM** (Agentica, 2025) — The training framework. Extends veRL for multi-turn agent RL with GRPO/PPO.
 
 5. **GRPO** (Shao et al., 2024) — Group Relative Policy Optimization. DeepSeekMath paper. The key insight: use the group mean as the baseline instead of a learned value function.
+
+---
+
+# Where Different Components Should Run
+
+This setup uses BOTH:
+
+- local machine
+- RunPod GPU machine
+
+Each has a different responsibility.
+
+---
+
+# Local Machine Responsibilities
+
+Do ALL development locally:
+
+- edit Python files
+- modify prompts
+- debug logic
+- Git commits
+- GitHub pushes
+- VS Code / Cursor development
+
+Recommended tools:
+
+- VS Code
+- Cursor
+- Windsurf
+- PyCharm
+
+DO NOT do serious coding inside browser terminals.
+
+Preferred workflow:
+
+Local edit
+→ git push
+→ RunPod git pull
+
+---
+
+# RunPod Responsibilities
+
+RunPod should ONLY handle GPU-heavy workloads:
+
+- vLLM model serving
+- GRPO training
+- rollout generation
+- checkpoint saving
+- GPU inference
+
+This is because:
+- RL training needs GPU memory
+- vLLM needs GPU acceleration
+- rollout generation is compute-heavy
+
+---
+
+# Important Architecture
+
+Local machine:
+- lightweight coding environment
+
+RunPod:
+- heavy GPU compute environment
+
+Example:
+
+Local VS Code
+    ↓
+GitHub push
+    ↓
+RunPod git pull
+    ↓
+vLLM inference
+    ↓
+GRPO training
+
+---
+
+# IMPORTANT
+
+Even if:
+- coding happens locally
+
+the following MUST run on RunPod:
+
+- vLLM server
+- GRPO trainer
+- model loading
+- rollout generation
+
+because these require GPU memory and CUDA.
+
+---
+
+# Correct Workflow
+
+1. Edit code locally
+2. Push changes to GitHub
+3. Pull latest code on RunPod
+4. Start vLLM server on RunPod
+5. Run GRPO training on RunPod
+
+Example:
+
+```bash
+git pull
+python -m vllm.entrypoints.openai.api_server ...
+python grpo_trainer_v2.py
+```
+
+---
+
+# Why This Workflow Is Best
+
+Benefits:
+
+- easier editing
+- proper IDE support
+- stable copy/paste
+- better debugging
+- GPU used only when needed
+- lower operational friction
+
+This is the standard modern ML engineering workflow.
 
 ---
 
