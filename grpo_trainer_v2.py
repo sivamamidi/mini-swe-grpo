@@ -31,7 +31,7 @@ from agent import query_vllm, extract_code, MODEL_NAME
 
 class Config:
     # Model (HuggingFace for training, vLLM for generation)
-    hf_model: str = "Qwen/Qwen2.5-Coder-1.5B-Instruct"
+    hf_model: str = "./models/Qwen2.5-Coder-1.5B-Instruct"
     vllm_model: str = MODEL_NAME
 
     # GRPO

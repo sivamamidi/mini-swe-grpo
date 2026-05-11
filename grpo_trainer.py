@@ -40,7 +40,7 @@ class GRPOConfig:
     """All hyperparameters in one place."""
 
     # Model
-    model_name: str = "Qwen/Qwen2.5-Coder-1.5B-Instruct"
+    model_name: str = "./models/Qwen2.5-Coder-1.5B-Instruct"
 
     # GRPO
     group_size: int = 4          # Rollouts per puzzle (DeepSWE uses 16, we use 4 for speed)
