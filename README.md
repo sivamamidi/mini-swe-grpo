@@ -67,7 +67,7 @@ pip install torch transformers accelerate matplotlib scipy SciencePlots
 
 # 3. Start vLLM server (on RunPod)
 python -m vllm.entrypoints.openai.api_server \
-  --model ./Mini-SWE-RL/models/Qwen2.5-Coder-1.5B-Instruct \
+  --model ./models/Qwen2.5-Coder-1.5B-Instruct \
   --host 0.0.0.0 --port 8000 \
   --dtype float16 --gpu-memory-utilization 0.7 --max-model-len 1024
 

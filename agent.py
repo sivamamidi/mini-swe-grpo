@@ -27,7 +27,7 @@ client = OpenAI(
     api_key="EMPTY"
 )
 
-MODEL_NAME = "./Mini-SWE-RL/models/Qwen2.5-Coder-1.5B-Instruct"
+MODEL_NAME = "./models/Qwen2.5-Coder-1.5B-Instruct"
 
 
 def query_vllm(prompt: str,

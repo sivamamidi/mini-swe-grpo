@@ -82,7 +82,7 @@ Run this on RunPod:
 
 ```bash
 python -m vllm.entrypoints.openai.api_server \
-  --model ./Mini-SWE-RL/models/Qwen2.5-Coder-1.5B-Instruct \
+  --model ./models/Qwen2.5-Coder-1.5B-Instruct \
   --host 0.0.0.0 \
   --port 8000 \
   --dtype float16 \
@@ -116,7 +116,7 @@ Expected:
 {
   "data": [
     {
-      "id": "./Mini-SWE-RL/models/Qwen2.5-Coder-1.5B-Instruct"
+      "id": "./models/Qwen2.5-Coder-1.5B-Instruct"
     }
   ]
 }
@@ -141,7 +141,7 @@ client = OpenAI(
 )
 
 response = client.chat.completions.create(
-    model="./Mini-SWE-RL/models/Qwen2.5-Coder-1.5B-Instruct",
+    model="./models/Qwen2.5-Coder-1.5B-Instruct",
     messages=[
         {
             "role": "system",
@@ -213,7 +213,7 @@ client = OpenAI(
     api_key="EMPTY"
 )
 
-MODEL_NAME = "./Mini-SWE-RL/models/Qwen2.5-Coder-1.5B-Instruct"
+MODEL_NAME = "./models/Qwen2.5-Coder-1.5B-Instruct"
 ```
 
 ---

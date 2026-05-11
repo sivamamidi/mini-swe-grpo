@@ -16,7 +16,7 @@ client = OpenAI(
 )
 
 response = client.chat.completions.create(
-    model="./Mini-SWE-RL/models/Qwen2.5-Coder-1.5B-Instruct",
+    model="./models/Qwen2.5-Coder-1.5B-Instruct",
     messages=[
         {
             "role": "system",
